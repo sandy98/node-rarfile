@@ -3,7 +3,7 @@ spawn = require('child_process').spawn
 exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
