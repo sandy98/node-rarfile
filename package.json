@@ -1,0 +1,39 @@
+{
+  "name": "rarfile",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "description": "Library for reading rarfiles in node.js",
+  "keywords": [
+    "rarfile",
+    "uncompress",
+    "unrar"
+  ],
+  "url": "http://github.com/sandy98/node-rarfile",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "git://github.com/sandy98/node-rarfile.git"
+    }
+  ],
+  "author": "Domingo E. Savoretti <esavoretti@gmail.com>",
+  "contributors": [],
+  "licenses": [
+    "MIT"
+  ],
+  "dependencies": {
+    "when": "~2.0.1"
+  },
+  "devDependencies": {
+    "node-simple-router": "*"
+  },
+  "bin": {},
+  "directories": {
+    "src": "src"
+  },
+  "engines": {
+    "node": ">= 0.6.13"
+  },
+  "scripts": {
+    "prepublish": "rm -rf lib && coffee --output lib/ src/"
+  }
+}
