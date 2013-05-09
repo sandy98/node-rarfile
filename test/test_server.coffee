@@ -1,10 +1,13 @@
 #!/usr/bin/env coffee
 
-Base64 = require('js-base64').Base64
-
+try
+  Base64 = require('js-base64').Base64
+catch e
+  Base64 = null
+  
 Router = require 'node-simple-router'
 
-RarFile = require('../lib/index').RarFile
+RarFile = require('../src/index').RarFile
 
 http = require 'http'
 router = Router(list_dir: true)
@@ -40,15 +43,20 @@ router.get '/index.html', rootPage
 
 router.get "/images/:id", (request, response) ->
   rarFile = new RarFile './test.cbr'
+  ###
   rarFile.readFile "#{request.params.id}.jpg", (err, fdata) ->
      if fdata.length
-       response.writeHead 200, 'Content-Type': 'image/jpg'
+       response.writeHead 200, 'Content-Type': 'image/jpeg'
        response.write fdata, 'binary'
+       response.end()
      else
        response.writeHead 200, 'Content-Type': 'text/html'
        response.write '<h3 style="color: red; text-align: center;">Sorry, ain\'t got the image you\'re looking for</h3>'
      response.end()
-
+  ###
+  response.writeHead 200, 'Content-Type': 'image/jpeg'
+  rarFile.pipe "#{request.params.id}.jpg", response
+  
 router.get "/embedded", (request, response) ->
   template="""
   <html>
