@@ -46,7 +46,7 @@ node-rarfile module exports an object which provides 2 properties
     
 ## Motivation
 
-For one thing, I couldn't find a node.js unrar utility along the lines of [node-zipfile](https://github.com//springmeyer/node-zipfile). 
+For one thing, I couldn't find a node.js unrar utility along the lines of [node-zipfile](https://github.com/springmeyer/node-zipfile). 
 Thought one should be available.
 It's worth noting though, that in spite of trying to make an API as close as was possible to the aforementioned, the inner workings of both
 are very different. node-zipfile is a much more complete piece of software, as you can easily figure out by examining the source codes of both.
