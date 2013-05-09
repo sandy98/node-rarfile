@@ -1,6 +1,6 @@
 {
   "name": "rarfile",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "./lib/index.js",
   "description": "Library for reading rarfiles in node.js",
   "keywords": [
