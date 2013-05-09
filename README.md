@@ -8,10 +8,10 @@ Utility for handling rarfile archives using [node](http://nodejs.org).
 
     var rarfile = require('rarfile');
     var rf = new rarfile.RarFile('./test/test.cbr');
-    console.log rf.toString()
-       { names: [ '0.jpg', '2.jpg']}
+    console.log(rf.toString());
+      // { names: [ '0.jpg', '2.jpg']}
        
-    rf.readFile('0.jpg' function(err, fdata) {
+    rf.readFile('0.jpg', function(err, fdata) {
       console.log("File 0.jpg is " + fdata.length + " bytes long.");
     });
 
