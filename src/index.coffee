@@ -2,6 +2,7 @@ fs = require 'fs'
 spawn = require('child_process').spawn
 exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
+_when = require 'when'
 
 VERSION = '0.1.2'
 
