@@ -34,7 +34,8 @@ spawning unrar as a child process. As such, it's guaranteed to work on
 unrar is installed and it's executable is in the path. This has been recently tested,
 
  * [when](https://github.com/cujojs/when) asyncronous library.
- * 
+ 
+
 ## Installation
 
 Install via npm:
