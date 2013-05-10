@@ -56,12 +56,11 @@ router.get "/images/:id", (request, response) ->
   ###
   rarFile.on 'pipe:data', ->
     response.writeHead 200, 'Content-Type': 'image/jpeg'
-    response.end()
   rarFile.on 'pipe:error', (err) ->
     response.writeHead 200, 'Content-Type': 'text/html'
     response.end "<h3 style='color: red; text-align: center;'>#{err.toString()}</h3>"
-    
-  rarFile.pipe "#{request.params.id}.jpg", response, end: false
+  rarFile.on 'ready', ->    
+    rarFile.pipe "#{request.params.id}.jpg", response
   
 router.get "/embedded", (request, response) ->
   template="""
