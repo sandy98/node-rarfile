@@ -4,7 +4,7 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.1.6'
+VERSION = '0.1.7'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
@@ -58,7 +58,7 @@ class RarFile extends EventEmitter
         @
       ),
       ((err) =>
-        console.log "Throwing error #{err.toString()} produced while loading names from the RAR archive"
+        console.log "Throwing error #{err.toString()} produced while loading names from the RAR archive" if @debugMode
         throw err
       )
     )
@@ -88,9 +88,12 @@ class RarFile extends EventEmitter
     unrar = spawn @rarTool, params
     unrar.stdout.setEncoding 'binary'
     @emit 'readStream', unrar.stdout unless options?.silent
+    console.log 'readStream EVENT' if @debugMode
     return unrar.stdout
 
   readFile: (filename, cb, options) =>
+    if cb and cb.constructor.name is 'Object'
+      options = cb
     ( =>
         deferred = _when.defer()
         fdata = ''
@@ -103,12 +106,14 @@ class RarFile extends EventEmitter
     .then(
       ((data) =>
          @emit 'readFile:data', data unless options?.silent
+         console.log 'readFile:data EVENT' if @debugMode
          if cb and cb.constructor.name is 'Function'
            cb null, data
          data
       ),
       ((err) =>
          @emit 'readFile:error', err unless options?.silent
+         console.log "readFile:error - #{err.toString()}" if @debugMode 
          if cb and cb.constructor.name is 'Function'
            cb err, null
          err
@@ -116,15 +121,30 @@ class RarFile extends EventEmitter
     )
 
   pipe: (filename, outStream, options = end: true) =>
+    if filename.constructor.name is 'Number'
+      filename = @names[filename]
+    if not filename
+      err = new Error 'Wrong archive file'
+      @emit 'pipe:error', err
+      console.log "pipe:error - #{err.toString()}" if @debugMode 
+      throw err
     if (not outStream) or (not outStream.write) or (outStream.write.constructor.name isnt 'Function')
       err = new Error 'A writable stream must be provided'
       @emit 'pipe:error', err
-      return err
+      console.log "pipe:error - #{err.toString()}" if @debugMode 
+      throw err
     @readFile(filename)
     .then((data) =>
-      outStream.write data, 'binary'
+      if data.length is 0
+        err = new Error 'File does not exist in the archive'
+        @emit 'pipe:error', err
+        console.log "pipe:error - #{err.toString()}" if @debugMode 
+        throw err
+      outStream.write data, options?.encoding or 'binary'
       outStream.end() unless not options?.end
       @emit 'pipe:data', outStream, data unless options?.silent
+      console.log "pipe:data EVENT" if @debugMode 
+      data
     )    
 
   showFile: (filename) =>

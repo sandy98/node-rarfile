@@ -42,7 +42,7 @@ router.get '/', rootPage
 router.get '/index.html', rootPage
 
 router.get "/images/:id", (request, response) ->
-  rarFile = new RarFile './test.cbr'
+  rarFile = new RarFile './test.cbr', debugMode: true
   ###
   rarFile.readFile "#{request.params.id}.jpg", (err, fdata) ->
      if fdata.length
@@ -54,8 +54,14 @@ router.get "/images/:id", (request, response) ->
        response.write '<h3 style="color: red; text-align: center;">Sorry, ain\'t got the image you\'re looking for</h3>'
      response.end()
   ###
-  response.writeHead 200, 'Content-Type': 'image/jpeg'
-  rarFile.pipe "#{request.params.id}.jpg", response
+  rarFile.on 'pipe:data', ->
+    response.writeHead 200, 'Content-Type': 'image/jpeg'
+    response.end()
+  rarFile.on 'pipe:error', (err) ->
+    response.writeHead 200, 'Content-Type': 'text/html'
+    response.end "<h3 style='color: red; text-align: center;'>#{err.toString()}</h3>"
+    
+  rarFile.pipe "#{request.params.id}.jpg", response, end: false
   
 router.get "/embedded", (request, response) ->
   template="""
@@ -70,7 +76,7 @@ router.get "/embedded", (request, response) ->
   </html>
   """
   response.writeHead 200, 'Content-type': 'text/html'
-  rf = new RarFile './test.cbr'
+  rf = new RarFile './test.cbr', debugMode: true
   rf.readFile '0.jpg', (err, fdata) ->
     console.log "Binary length of '0.jpg': #{fdata.length}"
     #b64 = Base64.encode fdata
