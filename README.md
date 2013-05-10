@@ -44,16 +44,25 @@ Install via npm:
 ## API
 
 node-rarfile module exports an object which exposes 3 properties
+
 * <strong>VERSION</strong> Current module version.
+
 * <strong>isRarFile</strong> function, which may be used to test if a file is RAR compressed
+
 * <strong>RarFile</strong> object, which must be instantiated with a RAR file path, otherwise will throw an error, 
   and which features the following properties:
+
     * <strong>names</strong> (Object): an array containing the names of the archived files
+
     * <strong>readStream</strong> (Function): called with the file which data will be retrieved, returns the output stream of unrar child process, which may be piped
       to another stream or whatever use you see fit. There are some issues remaining for binary data (i.e. images)
+
     * <strong>readFile</strong> (Function): must be called with two parameters:
+
        * 1) Name of a file within the archive 
+
        * 2) A callback function meant to handle the file data.
+
     * <strong>pipe</strong> (Function): meant to make RarFile instances to behave like a ReadStream, it takes an additional (first)
       parameter, the name of the archived file to be piped, thus relegating the name of the write stream to the 
       second formal parameter. (See the previous example)

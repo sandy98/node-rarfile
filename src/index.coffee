@@ -4,7 +4,7 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.1.10'
+VERSION = '0.1.11'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
