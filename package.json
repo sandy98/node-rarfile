@@ -2,7 +2,7 @@
   "author": "Domingo Ernesto Savoretti",
   "name": "rarfile",
   "description": "A library of functions to handle RAR archives",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "homepage": "https://github.com/sandy98/node-rarfile",
   "repository": {
     "type": "git",

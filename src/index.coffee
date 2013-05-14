@@ -4,7 +4,7 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.1.12'
+VERSION = '0.1.13'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
@@ -68,7 +68,7 @@ class RarFile extends EventEmitter
     )
 
   _loadNames: () =>
-     params = "#{LIST_PARAMS.join ' '} #{@archiveName}"
+     params = "#{LIST_PARAMS.join ' '} \"#{@archiveName}\""
      executable = "#{@rarTool} #{params}"
      console.log "Running << #{executable} >>" if @debugMode
      deferred = _when.defer()
