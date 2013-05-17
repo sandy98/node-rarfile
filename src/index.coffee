@@ -4,7 +4,7 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.1.13'
+VERSION = '0.1.14-3'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
@@ -40,14 +40,16 @@ class RarFile extends EventEmitter
 
   constructor: (@archiveName, options) ->
     if not @archiveName
-      throw new Error 'Must provide a filename.'
-    if not isRarFile @archiveName
-      throw new Error "#{@archiveName} is not a RAR archive"
+      throw new Error 'Must provide a filename.'  
     @rarTool = options?.rarTool or RAR_TOOL 
     @debugMode = options?.debugMode or false
     @viewTool = options?.viewTool or VIEW_TOOL
+    @faultTolerant = options?.faultTolerant or true
     @_loadedList = false
     @names =  []
+    if not isRarFile @archiveName
+      if not @faultTolerant
+        throw new Error "#{@archiveName} is not a RAR archive"
     @on 'ready', (who) =>
       console.log who.toString() if who.debugMode
     @_loadNames()
@@ -69,7 +71,7 @@ class RarFile extends EventEmitter
 
   _loadNames: () =>
      params = "#{LIST_PARAMS.join ' '} \"#{@archiveName}\""
-     executable = "#{@rarTool} #{params}"
+     executable = "\"#{@rarTool}\" #{params}"
      console.log "Running << #{executable} >>" if @debugMode
      deferred = _when.defer()
      exec executable, encoding: "utf8", maxBuffer: MAX_BUFFER_SIZE, (err, stdout, stderr) =>
@@ -82,10 +84,10 @@ class RarFile extends EventEmitter
      
   readStream: (filename, options) =>
     params =  (p for p in EXTRACT_PARAMS)
-    params.push @archiveName
-    params.push filename
-    console.log "Running << #{@rarTool} #{JSON.stringify(params)} >>" if @debugMode
-    unrar = spawn @rarTool, params
+    params.push "#{@archiveName}"
+    params.push "#{filename}"
+    console.log "Running << #{@rarTool} #{params} >>" if @debugMode
+    unrar = spawn "#{@rarTool}", params
     unrar.stdout.setEncoding 'binary'
     @emit 'readStream', unrar.stdout unless options?.silent
     console.log 'readStream EVENT' if @debugMode
