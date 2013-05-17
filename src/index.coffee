@@ -4,7 +4,7 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.1.14-4'
+VERSION = '0.1.14-5'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
@@ -20,13 +20,12 @@ isRarFile =  (filename, cb) =>
      fd = fs.openSync filename, 'r'
      data = new Buffer(RAR_ID.length)
      fs.readSync(fd, data, 0, RAR_ID.length)
-     #data = fs.readFileSync(filename)
-     #ret = RAR_ID is data[0...RAR_ID.length]
-     ret = true
-     for n in [0...RAR_ID.length]
-       if data[n] isnt RAR_ID[n] 
-         ret = false
-         break
+     ret = data.inspect() is RAR_ID.inspect()
+     #ret = true
+     #for n in [0...RAR_ID.length]
+     #  if data[n] isnt RAR_ID[n] 
+     #     ret = false
+     #     break
      if cb
        cb null, ret
      return ret
