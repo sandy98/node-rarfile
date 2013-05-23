@@ -83,7 +83,7 @@ router.get "/embedded", (request, response) ->
     #html = template.replace('{{ imgdata }}', b64)
     parts = template.split('{{ imgdata }}')
     response.write parts[0]
-    ascii = escape(fdata)
+    ascii = escape(fdata.toString 'binary')
     console.log "Escaped ascii length of '0.jpg': #{ascii.length}"
     response.write ascii, 'ascii'
     response.end parts[1]
