@@ -4,11 +4,11 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.2.0-1'
+VERSION = '0.2.1-1'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
-LIST_PARAMS = ['lb']
+LIST_PARAMS = ['t']
 EXTRACT_PARAMS = ['p', '-y', '-idq']
 VIEW_TOOL = 'kview'
 MAX_BUFFER_SIZE = 1024 * 1024 * 10 
@@ -66,7 +66,13 @@ class RarFile extends EventEmitter
     @_loadNames()
     .then(
       ((readStream) =>
-        @names = (f for f in readStream.split '\n' when (f and f isnt 'undefined'))
+        files = (f for f in readStream.split '\n' when (f and f isnt 'undefined'))
+        @names = []
+        regex = /Testing\s+(.+)\s+\x08{4}/
+        for f in files
+          match = f.match regex
+          if match
+            @names.push match[1].trim()
         @_loadedList = true
         @
       ),
