@@ -4,7 +4,7 @@ exec = require('child_process').exec
 EventEmitter = require('events').EventEmitter
 _when = require 'when'
 
-VERSION = '0.2.1-2'
+VERSION = '0.2.1-3'
 
 RAR_ID = new Buffer 'Rar!\x1a\x07\x00'
 RAR_TOOL = 'unrar'
@@ -20,12 +20,8 @@ isRarFile =  (filename, cb) =>
      fd = fs.openSync filename, 'r'
      data = new Buffer(RAR_ID.length)
      fs.readSync(fd, data, 0, RAR_ID.length)
+     fs.closeSync fd
      ret = data.inspect() is RAR_ID.inspect()
-     #ret = true
-     #for n in [0...RAR_ID.length]
-     #  if data[n] isnt RAR_ID[n] 
-     #     ret = false
-     #     break
      if cb
        cb null, ret
      return ret
@@ -67,12 +63,6 @@ class RarFile extends EventEmitter
     .then(
       ((readStream) =>
         @names = (f for f in readStream.split '\n' when (f and f isnt 'undefined'))
-        #@names = []
-        #regex = /Testing\s+(.+)\s+\x08{4}/
-        #for f in files
-        #  match = f.match regex
-        #  if match
-        #    @names.push match[1].trim()
         @_loadedList = true
         @
       ),
