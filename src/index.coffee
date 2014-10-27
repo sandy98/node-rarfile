@@ -62,7 +62,7 @@ class RarFile extends EventEmitter
     @_loadNames()
     .then(
       ((readStream) =>
-        @names = (f for f in readStream.split '\n' when (f and f isnt 'undefined'))
+        @names = (f.replace('\r', '') for f in readStream.split '\n' when (f and f isnt 'undefined'))
         @_loadedList = true
         @
       ),
